@@ -22,7 +22,8 @@ TFTP_DIR="${ROOT_DIR}/tftpboot"
 DTC_DIR="${ROOT_DIR}/dtc"
 PRUDEBUG_DIR="${ROOT_DIR}/prudebug-rl"
 
-BBBL_DEFCONFIG="beagleboneblue_defconfig"
+BUILDROOT_BOARD_NAME="beagledrone"
+BUILDROOT_DEFCONFIG="${BUILDROOT_BOARD_NAME}_defconfig"
 BBBL_OVERLAY="beagleboneblue"
 
 BUILDROOT_DEFCONFIG_DIR="${BUILDROOT_DIR}/configs"
