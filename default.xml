@@ -2,6 +2,7 @@
 <remote name="github" fetch="https://github.com"/>
 
 <project name="snst/ardupilot" remote="github" path="ardupilot" revision="stsc1"/>
+<project name="snst/buildroot" remote="github" path="buildroot" revision="stsc1"/>
                                                
 </manifest>
 
