@@ -1,0 +1,7 @@
+<manifest>
+<remote name="github" fetch="https://github.com"/>
+
+<project name="snst/ardupilot" remote="github" path="ardupilot" revision="stsc1"/>
+                                               
+</manifest>
+
