@@ -15,7 +15,7 @@ RUN apt-get update && export DEBIAN_FRONTEND=noninteractive \
      sed make binutils gcc g++ bash patch \
      gzip bzip2 perl tar cpio python unzip rsync wget libncurses-dev file \
      cmake \
-     libc6-i386
+     libc6-i386 gdb-multiarch python-is-python3
 #RUN apt remove python2 && ln -s /usr/bin/python3 /usr/bin/python
 
 #RUN apt-get update && export DEBIAN_FRONTEND=noninteractive \
@@ -24,4 +24,4 @@ RUN apt-get update && export DEBIAN_FRONTEND=noninteractive \
 RUN update-alternatives --install /usr/bin/python python /usr/bin/python3.8 1
 RUN sudo update-alternatives  --set python /usr/bin/python3.8
 
-RUN pip3 install future pexpect
+RUN pip3 install future pexpect empy kconfiglib jinja2 pyyaml jsonschema pyros-genmsg toml numpy packaging
