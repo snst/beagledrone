@@ -1,0 +1,312 @@
+= Beagebone Blue
+
+== Links
+
+https://docs.emlid.com/navio/ardupilot/building-from-sources/
+https://forum.digikey.com/t/debian-getting-started-with-the-beaglebone-blue/12969
+https://beaglebluevoyager.com/sensors-and-components/
+https://github.com/beagleboard/librobotcontrol
+
+https://bootlin.com/doc/training/buildroot/buildroot-labs.pdf
+https://bootlin.com/blog/tftp-nfs-booting-beagle-bone-black-wireless-pocket-beagle/
+https://bootlin.com/doc/training/buildroot/buildroot-slides.pdf
+https://bootlin.com/doc/training/buildroot/buildroot-labs.pdf
+
+https://tewarid.github.io/2014/10/10/wireless-on-raspberry-pi-with-buildroot.html
+https://github.com/RobertCNelson/bb-wl18xx-firmware/tree/master/debian
+
+
+https://github.com/beagleboard/beaglebone-blue/blob/master/BeagleBone_Blue_sch.pdf
+https://github.com/beagleboard/beaglebone-blue/blob/master/BeagleBone_Blue_brd.pdf
+
+https://beagleboard.org/static/prucookbook/
+https://github.com/dinuxbg/gnupru
+https://elinux.org/Beagleboard:BeagleBoneBlack_Debian#TI_PRU_Code_Generation_Tools
+https://www.ti.com/tool/TI-CGT#PRU
+
+https://elinux.org/BeagleBoardPinMux
+http://www.ofitselfso.com/BeagleNotes/BeagleboneBlackPinMuxModes.php
+https://www.ofitselfso.com/BeagleNotes/
+https://poushtickcoder.wordpress.com/2018/03/12/quadcopter-fc-dobby-beaglebone-blue-pru-tutorial-by-a-dummy-configuration/
+https://forum.beagleboard.org/t/cant-load-firmware-to-pru-on-beaglebone-black/30443
+
+https://ofitselfso.com/BeagleNotes/BeagleNotes.php
+https://www.glennklockwood.com/embedded/beaglebone.html
+
+https://rcn-ee.net/rootfs/debian-armhf/2022-02-25/
+
+https://docs.px4.io/master/en/flight_controller/beaglebone_blue.html
+https://github.com/mirkix/ardupilotblue
+https://github.com/imfatant/test
+https://github.com/ArduPilot/ardupilot/blob/master/BUILD.md
+
+https://kilobaser.com/beaglebone-black-device-tree-overlay-generator/
+
+https://dev.px4.io/v1.11_noredirect/en/simulation/hitl.html
+https://nrottmann.gitbooks.io/devguide_sim/content/en/simulation/
+https://www.cpswarm.eu/wp-content/uploads/2019/05/CPSWARM_D6.5_V1.0-Final.pdf
+
+
+== Config
+
+=== USB-ETH
+
+|===
+|target-IP| 192.168.1.100
+|host-IP  | 192.168.1.111
+|===
+
+== uboot
+
+=== Load kernel,dtb via tftp, mount NFS rootfs
+
+----
+setenv ipaddr 192.168.1.100
+setenv serverip 192.168.1.111
+setenv ethact usb_ether
+setenv usbnet_devaddr f8:dc:7a:00:00:02
+setenv usbnet_hostaddr f8:dc:7a:00:00:01
+setenv bootargs root=/dev/nfs rw ip=192.168.1.100:::::usb0 console=ttyO0,115200n8 g_ether.dev_addr=f8:dc:7a:00:00:02 g_ether.host_addr=f8:dc:7a:00:00:01 nfsroot=192.168.1.111:/nfsroot,nfsvers=3
+setenv bootcmd 'tftp 0x81000000 zImage; tftp 0x82000000 beagledrone.dtb; bootz 0x81000000 - 0x82000000'
+boot
+----
+
+=== Load kernel,dtb+cpio-rootfs via tftp, mount NFS rootfs
+
+----
+setenv ipaddr 192.168.1.100
+setenv serverip 192.168.1.111
+setenv ethact usb_ether
+setenv usbnet_devaddr f8:dc:7a:00:00:02
+setenv usbnet_hostaddr f8:dc:7a:00:00:01
+setenv bootargs root=/dev/nfs rw ip=192.168.1.100:::::usb0 console=ttyO0,115200n8 g_ether.dev_addr=f8:dc:7a:00:00:02 g_ether.host_addr=f8:dc:7a:00:00:01 nfsroot=192.168.1.111:/nfsroot,nfsvers=3
+setenv bootcmd 'tftp 0x81000000 zImage; tftp 0x82000000 beagledrone.dtb; tftp 0x82100000 rootfs.cpio.uboot; bootz 0x81000000 0x82100000 0x82000000'
+boot
+----
+
+=== Commands
+
+|===
+| saveenv |
+| tftp 0x81000000 zImage |
+| tftp 0x82000000 am335x-boneblue.dtb |
+| md 0x81000000 | Show content in memory
+|===
+
+
+== Docker
+
+|===
+|docker images | show installed docker images
+|docker ps | show running docker containers
+|docker kill [NAME] | kill running docker container
+|===
+
+
+== Linux
+
+=== WLAN
+https://tewarid.github.io/2014/10/10/wireless-on-raspberry-pi-with-buildroot.html
+
+
+Create config file for WLAN:
+----
+wpa_passphrase YOUR_SSID YOUR_PW > SSID.conf
+----
+
+File content:
+----
+echo 'network={
+	ssid="YOUR_SSID"
+	#psk="YOUR_PW"
+	psk=GENERATED_PSK_PASSPHRASE
+} ' > SSID.conf
+----
+
+Start:
+----
+ip link set wlan0 up
+wpa_supplicant -B -i wlan0 -c SSID.conf
+dhcpcd wlan0
+----
+
+=== DTB
+
+https://kilobaser.com/beaglebone-black-device-tree-overlay-generator/
+
+
+
+=== Commands
+
+|===
+|iw list |
+|ip link |
+|iw dev wlan0 scan |
+|netstat -n --udp --listen | Show listening UDP ports
+|nmap -T4 localhost | Show listening ports
+|df -h | Show mounts
+|sudo screen /dev/ttyUSB0 115200 | serial console
+|sudo picocom -b 115200 /dev/ttyUSB0 | serial console
+|atftp localhost
+
+get a.txt| tftp transfer
+|sudo umount -f -a -t nfs | Unmount all nfs mounts
+| sudo systemctl stop portmap
+
+sudo systemctl disable portmap
+
+sudo systemctl stop rpcbind
+
+sudo systemctl disable rpcbind | portmap error, disable on host
+
+| dtc -I fs /sys/firmware/devicetree/base | dump device tree (run on target) 
+| ls /proc/device-tree/chosen/overlays | show loaded overlays
+| dtc -O dtb -o /lib/firmware/bspm_P8_15_26-00A0.dtbo -b 0 -@ /lib/firmware/bspm_P8_15_26-00A0.dts | compile overlay
+|===
+
+=== Installs
+|===
+|sudo apt install picocom | serial console
+|sudo apt install atftp | tftp client
+|sudo apt install nfs-client -y | nfs client
+|===
+
+= Kernel config
+
+|===
+CONFIG_PRU_REMOTEPROC | for: echo start > /sys/class/remoteproc/remoteproc0/state 
+|===
+
+= PRU
+
+== Commands
+
+|===
+| echo start > /sys/class/remoteproc/remoteproc0/state | start proc0
+| echo stop > /sys/class/remoteproc/remoteproc0/state | stop proc0
+| cat /sys/class/remoteproc/remoteproc0/state | show proc0 state
+| echo '/lib/firmware/ti-connectivity/am335x-pru0-rc-encoder-fw' > /sys/class/remoteproc/remoteproc0/firmware | load proc0
+|===
+
+uboot_overlay_pru=/lib/firmware/AM335X-PRU-RPROC-4-19-TI-00A0.dtbo
+
+
+/workspaces/bbbl/ardupilot/Tools/Linux_HAL_Essentials/pru/aiopru/start_test
+https://discuss.ardupilot.org/t/building-for-beaglebone-blue/53208/14
+
+
+https://forum.beagleboard.org/t/vring-interrupt-problems-while-using-pru-on-kernel-5-10-with-pssp-6-0-0/31029
+
+
+= PINMUX
+https://stackoverflow.com/questions/27892485/how-can-i-edit-a-pinmux-for-beaglebone-black-on-linux-kernel-3-17
+ /sys/devices/ocp./P8_10_pinmux./state.
+  echo gpio_pd > /sys/devices/ocp.*/P8_10_pinmux.*/state
+   config-pin P8.10 in-
+CONFIG_BEAGLEBONE_PINMUX_HELPER
+https://forum.beagleboard.org/t/config-pin-tool-doesnt-work/2476/38?page=2
+http://www.ofitselfso.com/BeagleNotes/Beaglebone_Black_And_Device_Tree_Overlays.php
+P9_25_pinmux
+https://github.com/bgat/linux-multi-v7/tree/master/drivers/misc/cape/beaglebone
+pru: gpio1_15 ?
+./config-pin.sh -i P8_15
+https://github.com/adafruit/adafruit-beaglebone-io-python/issues/238
+https://github.com/beagleboard/buildroot/blob/master/configs/beaglebone_defconfig
+
+https://ofitselfso.com/BeagleNotes/UsingDeviceTreesToConfigurePRUIOPins.php
+/sys/kernel/debug/pinctrl/44e10800.pinmux-pinctrl-single
+cat /sys/kernel/debug/pinctrl/44e10800.pinmux-pinctrl-single/pins | grep 838
+
+P8_15:
+cat /sys/kernel/debug/pinctrl/44e10800.pinmux-pinctrl-single/pins | grep 83c
+cat /sys/kernel/debug/pinctrl/44e10800.pinmux-pinctrl-single/pinmux-pins
+https://kilobaser.com/beaglebone-black-device-tree-overlay-generator/
+https://elinux.org/Ti_AM33XX_PRUSSv2#Beaglebone_PRU_connections_and_modes
+config-pin -l P8_15
+config-pin -q p8_15
+config-pin p8_45 pruout
+echo pruecapin_pu >/sys/devices/platform/ocp/ocp:P8_15_pinmux/state
+ls /sys/devices/platform/ocp/
+
+unxz /lib/modules/5.10.100-ti-rt-r37/kernel/net/wireless/cfg80211.ko.xz
+
+insmod /lib/modules/5.10.100-ti-rt-r37/kernel/net/wireless/cfg80211.ko
+
+../buildroot/output/host/sbin/depmod  -b /workspaces/beagledrone/nfsroot 5.10.100-ti-rt-r37 -E ../kernel/KERNEL/Module.symvers
+
+= px4
+
+|===
+make list_config_targets
+/home/debian/px4/bin/px4 -d -s /home/debian/px4/px4.config > /home/debian/px4/PX4.log & 
+make beaglebone_blue
+make beaglebone_blue upload
+make beaglebone_blue boardconfig
+
+./bin/px4 -s px4.config 
+
+mpu9250_i2c -I -a 0x68 start
+
+
+
+|===
+
+
+= i2c
+
+|===
+| 0x76 | BMP280
+| 0x0c | Magnetometer AK8963
+| 0x68 | mpu9250
+|===
+
+DSM INPUT
+P9_11 rx, gpio#30
+https://github.com/beagleboard/librobotcontrol/blob/master/library/src/dsm.c
+#define P9_11_PATH "/sys/devices/platform/ocp/ocp:P9_11_pinmux/state"
+
+= GPIO
+https://kilobaser.com/beaglebone-black-device-tree-overlay-generator/
+http://www.ofitselfso.com/BeagleNotes/BeagleboneBlackPinMuxModes.php
+create dtb with mode
+echo 113 > /sys/class/gpio/export
+cat /sys/class/gpio/gpio113/value
+echo out > /sys/class/gpio/gpio113/direction 
+
+= Sim
+
+https://docs.px4.io/master/en/simulation/jmavsim.html
+ip route show
+./Tools/jmavsim_run.sh -l
+export PX4_SIM_HOSTNAME=172.17.0.1
+make px4_sitl none
+
+|===
+|14540 | Offboard APIs
+|14550 | Ground Control Stations (QGroundControl automatically connects to PX4 broadcasting on this port).
+|14560 | Simulators
+|===
+
+
+
+|====
+|1|SVO1|LCD_VSYNC_U5 |P8_27|86|pr1_pru1_pru_r30_8 |mode5
+|2|SVO2|LCD_PCLK_V5  |P8_28|88|pr1_pru1_pru_r30_10|mode5
+|3|SVO3|LCD_HSYNC_R5 |P8_29|87|pr1_pru1_pru_r30_9 |
+|4|SVO4|LCD_DE_R6    |P8_30|89|pr1_pru1_pru_r30_11|
+|5|SVO5|LCD_DATA6_T3 |P8_39|76|pr1_pru1_pru_r30_6 |
+|6|SVO6|LCD_DATA7_T4 |P8_40|77|pr1_pru1_pru_r30_7 |
+|7|SVO7|LCD_DATA4_T1 |P8_41|74|pr1_pru1_pru_r30_4 |
+|8|SVO8|LCD_DATA5_T2 |P8_42|75|pr1_pru1_pru_r30_5 |
+|====
+
+|===
+|1|86|LCD_VSYNC_U5|pr1_pru1_pru_r30_8|P8_27
+|2|88|LCD_PCLK_V5|pr1_pru1_pru_r30_10|P8_28
+|3|87|LCD_HSYNC_R5|pr1_pru1_pru_r30_9|P8_29
+|4|89|LCD_DE_R6|pr1_pru1_pru_r30_11|P8_30
+|5|76|LCD_DATA6_T3|pr1_pru1_pru_r30_6|P8_39
+|6|77|LCD_DATA7_T4|pr1_pru1_pru_r30_7|P8_40
+|7|74|LCD_DATA4_T1|pr1_pru1_pru_r30_4|P8_41
+|8|75|LCD_DATA5_T2|pr1_pru1_pru_r30_5|P8_42
+|===
