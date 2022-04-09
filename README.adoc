@@ -310,3 +310,18 @@ make px4_sitl none
 |7|74|LCD_DATA4_T1|pr1_pru1_pru_r30_4|P8_41
 |8|75|LCD_DATA5_T2|pr1_pru1_pru_r30_5|P8_42
 |===
+
+conf
+
+
+COM_RC_IN_MODE
+https://github.com/PX4/pyulog
+/home/stsc/.local/bin/ulog_info log_0_2022-4-2-20-18-06.ulg
+
+= SDCARD
+
+cat /proc/partitions
+lsblk -a
+sudo dd if=/dev/zero of=/dev/sdc bs=1M count=16
+
+sudo tar -C /media/stsc/da672085-c589-47a7-821c-d8d502e89a6b/ -xf /home/stsc/work/beagledrone/buildroot/output/images/rootfs.tar .
