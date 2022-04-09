@@ -1,5 +1,12 @@
 = Beagebone Blue
 
+== Steps
+. git@github.com:snst/beagledrone.git
+. ./scripts/repo_init.sh 
+. ./scripts/repo_sync.sh
+. ./scripts/br_make_defconfig.sh
+. ./scripts/br_make.sh
+
 == Links
 
 https://docs.emlid.com/navio/ardupilot/building-from-sources/
