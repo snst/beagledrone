@@ -7,9 +7,10 @@ mkdir -p /run/network
 
 case "$1" in
   start)
-	printf "Starting wpa_supplicant.. "
-	wpa_supplicant -B -i wlan0 -c /etc/default/SSID.conf
-	[ $? = 0 ] && echo "OK" || echo "FAIL"
+	printf "Starting wpa_supplicant.."
+	#wpa_supplicant -B -i wlan0 -c /etc/default/SSID.conf
+	#[ $? = 0 ] && echo "OK" || echo "FAIL"
+	/opt/bin/start_wlan.sh &
 	;;
   stop)
 	printf "Stopping wpa_supplicant.. "

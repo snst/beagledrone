@@ -7,20 +7,24 @@ if [ ! -f "$REPO_TOOL" ]; then
     chmod +x ${REPO_TOOL}
 fi
 
+TARGET_IP="192.168.0.198"
+
 REPO_TOOL="python3 ${REPO_TOOL}"
 
 ROOT_DIR="${BE_DIR}/.."
 ARDUPILOT_DIR="${ROOT_DIR}/ardupilot"
 BUILDROOT_DIR="${ROOT_DIR}/buildroot"
 PX4_DIR="${ROOT_DIR}/px4"
+PX4_EXTERNAL_DIR="${ROOT_DIR}/px4_external"
 UBOOT_DIR="${ROOT_DIR}/u-boot"
 LIBROBOTCONTROL_DIR="${ROOT_DIR}/librobotcontrol"
 NFSROOT_DIR="${ROOT_DIR}/nfsroot"
-KERNELBUILDSCRIPTS_DIR="${ROOT_DIR}/kernel"
+KERNEL_BUILD_DIR="${ROOT_DIR}/kernel"
+KERNEL_BUILD_EXTERNAL_DIR="${ROOT_DIR}/kernel_external"
 TOOLCHAIN_NAME="gcc-linaro-6.5.0-2018.12-x86_64_arm-linux-gnueabihf"
 TOOLCHAIN_DIR="${ROOT_DIR}/${TOOLCHAIN_NAME}"
 TFTP_DIR="${ROOT_DIR}/tftpboot"
-TMP_DIR="${ROOT_DIR}/tmp"
+OUT_DIR="${ROOT_DIR}/out"
 #DTC_DIR="${ROOT_DIR}/dtc"
 PRUDEBUG_DIR="${ROOT_DIR}/prudebug-rl"
 BEAGLEDRONE_FILES_DIR="${ROOT_DIR}/files"
@@ -47,6 +51,8 @@ export PRU_C_DIR="${BUILDROOT_DIR}/output/host/share/ti-cgt-pru/include;${BUILDR
 export PYTHON=/usr/bin/python3
 
 ARDUPILOT_WAF=$ARDUPILOT_DIR/modules/waf/waf-light
+
+mkdir -p ${OUT_DIR}
 
 #DTC_TOOL=${DTC_DIR}/dtc
 
