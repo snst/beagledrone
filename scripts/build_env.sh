@@ -7,7 +7,7 @@ if [ ! -f "$REPO_TOOL" ]; then
     chmod +x ${REPO_TOOL}
 fi
 
-TARGET_IP="192.168.0.198"
+TARGET_IP="192.168.0.200"
 
 REPO_TOOL="python3 ${REPO_TOOL}"
 
@@ -35,6 +35,8 @@ BUILDROOT_DEFCONFIG="${BUILDROOT_BOARD_NAME}_defconfig"
 BUILDROOT_DEFCONFIG_DIR="${BUILDROOT_DIR}/configs"
 BUILDROOT_OVERLAY_DIR="${BUILDROOT_DIR}/board"
 BUILDROOT_EXTERNAL="${ROOT_DIR}/buildroot_external"
+
+RSYNC="sshpass -p "root" rsync -arhv --progress"
 
 PRU1_BINARY_NAME="am335x-pru1-fw"
 

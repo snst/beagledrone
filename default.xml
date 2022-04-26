@@ -1,12 +1,12 @@
 <manifest>
-<remote name="github" fetch="git://github.com"/>
+<remote name="github" fetch="https://github.com"/>
 <remote name="kernel" fetch="https://git.kernel.org"/>
 
-<project name="snst/ardupilot" remote="github" path="ardupilot" revision="stsc1"/>
-<project name="snst/buildroot" remote="github" path="buildroot" revision="2021.11.x_stsc1"/>
-<project name="snst/ti-linux-kernel-dev" remote="github" path="kernel" revision="ti-linux-rt-5.10.y_stsc1"/>
+<project name="snst/buildroot" remote="github" path="buildroot" revision="2021.11.x"/>
+<!--<project name="snst/ti-linux-kernel-dev" remote="github" path="kernel" revision="ti-linux-rt-5.10.y"/>-->
 <project name="snst/prudebug-rl" remote="github" path="prudebug-rl" revision="master"/>
-<project name="snst/PX4-Autopilot" remote="github" path="px4" revision="stsc1" sync-s="true"/>
+<!--<project name="snst/PX4-Autopilot" remote="github" path="px4" revision="master" sync-s="true"/>-->
+<project name="snst/PX4-Autopilot" remote="github" path="px4" revision="stsc1"/>
    
 </manifest>
 

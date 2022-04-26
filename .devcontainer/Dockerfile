@@ -15,7 +15,8 @@ RUN apt-get update && export DEBIAN_FRONTEND=noninteractive \
      sed make binutils gcc g++ bash patch \
      gzip bzip2 perl tar cpio python unzip rsync wget libncurses-dev file \
      cmake \
-     libc6-i386 gdb-multiarch 
+     libc6-i386 gdb-multiarch \
+     sshpass
 #python-is-python3
 #RUN apt remove python2 && ln -s /usr/bin/python3 /usr/bin/python
 
